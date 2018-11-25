@@ -108,6 +108,7 @@ update msg model =
             if model.currentAnswer == model.currentKana.reading then
                 ( { model
                     | result = Correct
+                    , currentAnswer = ""
                     , numberCorrectAnswers = model.numberCorrectAnswers + 1
                   }
                 , Random.generate GetRandomKana (randomKana model)
