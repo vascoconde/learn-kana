@@ -1,0 +1,21 @@
+{
+  "name": "learn-kana",
+  "version": "0.0.1",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "elm-app build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vascoconde/learn-kana.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vascoconde/learn-kana/issues"
+  },
+  "homepage": "https://github.com/vascoconde/learn-kana#readme",
+  "devDependencies": {
+    "create-elm-app": "^2.2.3"
+  }
+}
