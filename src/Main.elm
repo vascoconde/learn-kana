@@ -223,8 +223,8 @@ viewKanaFilters model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 [] [ text <| "Learn some Kana" ]
+    div [ class "text-center font-sans" ]
+        [ h1 [ class "mt-3" ] [ text <| "Learn some Kana" ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , div [] [ text <| model.currentKana.character ]
         , div []
