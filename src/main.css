@@ -35,21 +35,6 @@
  * @import "components/buttons";
  * @import "components/forms";
  */
- 
- body {
-   font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
-   margin: 0;
-   font-size: 20px;
-   text-align: center;
-   color: #293c4b;
- }
-
- h1 {
-   font-size: 40px;
- }
-
-
-
 
 /**
  * This injects all of Tailwind's utility classes, generated based on your

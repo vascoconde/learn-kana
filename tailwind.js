@@ -194,6 +194,10 @@ module.exports = {
 
   fonts: {
     'sans': [
+      'Source Sans Pro',
+      'Trebuchet MS',
+      'Lucida Grande',
+      'Bitstream Vera Sans',
       'system-ui',
       'BlinkMacSystemFont',
       '-apple-system',
