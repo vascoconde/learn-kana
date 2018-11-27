@@ -66,6 +66,7 @@ type Msg
 type Result
     = Correct
     | Incorrect
+    | IncorrectShowAnswer String
     | None
 
 
@@ -75,6 +76,7 @@ type alias Model =
     , result : Result
     , numberCorrectAnswers : Int
     , numberWrongAnswers : Int
+    , failedAttempts : Int
     , practicingKanaConsonants : List String
     }
 
@@ -88,6 +90,7 @@ initialModel _ =
             , result = None
             , numberCorrectAnswers = 0
             , numberWrongAnswers = 0
+            , failedAttempts = 0
             , practicingKanaConsonants = kanaConsonants
             }
     in
@@ -105,10 +108,11 @@ update msg model =
             )
 
         SubmitAnswer ->
-            if model.currentAnswer == model.currentKana.reading then
+            if String.trim (String.toLower model.currentAnswer) == model.currentKana.reading then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
+                    , failedAttempts = 0
                     , numberCorrectAnswers = model.numberCorrectAnswers + 1
                   }
                 , Random.generate GetRandomKana (randomKana model)
@@ -117,8 +121,25 @@ update msg model =
             else if model.currentAnswer == "" then
                 ( model, Cmd.none )
 
+            else if model.failedAttempts > 1 then
+                ( { model
+                    | result = IncorrectShowAnswer model.currentKana.reading
+                    , currentAnswer = ""
+                    , failedAttempts = model.failedAttempts + 1
+                    , numberWrongAnswers = model.numberWrongAnswers - 1
+                  }
+                , Cmd.none
+                )
+
             else
-                ( { model | result = Incorrect, currentAnswer = "", numberWrongAnswers = model.numberWrongAnswers - 1 }, Cmd.none )
+                ( { model
+                    | result = Incorrect
+                    , currentAnswer = ""
+                    , numberWrongAnswers = model.numberWrongAnswers - 1
+                    , failedAttempts = model.failedAttempts + 1
+                  }
+                , Cmd.none
+                )
 
         GetRandomKana maybeKana ->
             case maybeKana of
@@ -187,6 +208,9 @@ viewResultLabel result =
         Incorrect ->
             text "👎"
 
+        IncorrectShowAnswer answer ->
+            text ("👎 the answer is: " ++ answer)
+
         None ->
             text ""
 
@@ -223,13 +247,13 @@ viewKanaFilters model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "text-center font-sans" ]
+    div [ class "text-center font-sans " ]
         [ h1 [ class "mt-3" ] [ text <| "Learn some Kana" ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , div [] [ text <| model.currentKana.character ]
         , div []
             [ input
-                [ class ""
+                [ class "shadow appearance-none block m-auto border rounded w-full max-w-xs my-3 py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
                 , placeholder "Answer"
                 , onInput UpdateAnswer
                 , onEnter SubmitAnswer
