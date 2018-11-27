@@ -41,11 +41,28 @@ kanaReadings =
     , Kana "フ" "hu" "h"
     , Kana "ヘ" "he" "h"
     , Kana "ホ" "ho" "h"
+    , Kana "マ" "ma" "m"
+    , Kana "ミ" "mi" "m"
+    , Kana "ム" "mu" "m"
+    , Kana "メ" "me" "m"
+    , Kana "モ" "mo" "m"
+    , Kana "ヤ" "ya" "y"
+    , Kana "ユ" "yu" "y"
+    , Kana "ヨ" "yo" "y"
+    , Kana "ラ" "ra" "r"
+    , Kana "リ" "ri" "r"
+    , Kana "ル" "ru" "r"
+    , Kana "レ" "re" "r"
+    , Kana "ロ" "ro" "r"
+    , Kana "ワ" "wa" "w"
+    , Kana "ヰ" "wi" "w"
+    , Kana "ヱ" "we" "w"
+    , Kana "ヲ" "wo" "w"
     ]
 
 
 kanaConsonants =
-    [ "", "k", "s", "t", "n", "h" ]
+    [ "", "k", "s", "t", "n", "h", "m", "y", "r", "w" ]
 
 
 type alias Kana =
@@ -253,14 +270,18 @@ view model =
         , div [] [ text <| model.currentKana.character ]
         , div []
             [ input
-                [ class "shadow appearance-none block m-auto border rounded w-full max-w-xs my-3 py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                [ class "shadow appearance-none block m-auto border rounded w-15 my-3 py-2 px-3 text-xl text-center text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
                 , placeholder "Answer"
                 , onInput UpdateAnswer
                 , onEnter SubmitAnswer
                 , value model.currentAnswer
                 ]
                 []
-            , button [ onClick SubmitAnswer ] [ text "Submit" ]
+            , button
+                [ class "bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 mb-4 rounded"
+                , onClick SubmitAnswer
+                ]
+                [ text "Submit" ]
             ]
         , div [] [ viewResultLabel model.result ]
         , viewKanaFilters model
