@@ -267,11 +267,12 @@ view model =
     div [ class "text-center font-sans " ]
         [ h1 [ class "mt-3" ] [ text <| "Learn some Kana" ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
-        , div [] [ text <| model.currentKana.character ]
+        , div [ class "text-5xl mt-3" ] [ text <| model.currentKana.character ]
+        , div [ class "h-4 mt-2" ] [ viewResultLabel model.result ]
         , div []
             [ input
-                [ class "shadow appearance-none block m-auto border rounded w-15 my-3 py-2 px-3 text-xl text-center text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-                , placeholder "Answer"
+                [ class "shadow appearance-none block m-auto border rounded w-15 mt-2 mb-3 py-2 px-3 text-xl text-center text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                , placeholder "reading"
                 , onInput UpdateAnswer
                 , onEnter SubmitAnswer
                 , value model.currentAnswer
@@ -283,7 +284,6 @@ view model =
                 ]
                 [ text "Submit" ]
             ]
-        , div [] [ viewResultLabel model.result ]
         , viewKanaFilters model
         ]
 
