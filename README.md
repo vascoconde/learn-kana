@@ -1,3 +1,15 @@
+# Learn Katakana
+
+This is a simple web app where your can get quizzed about you Katakana knowledge. The goal is to learn the reading of each kana.
+
+I'm learning Japanese, and while it's easy to train your Hiragana just by reading. I find it's difficult to practice Katakana as it's less common on easy reading material.
+
+I'm learning ELM (a front-end framework that inspired React) and thought it would be a good opportunity to put some of the things I learned into practice and build a simple app.
+
+As this is only a learning project for now, the app it's still very bare bones.
+
+[Live Preview](https://learnkana.elasticfiction.com).
+
 # Elm App
 
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
