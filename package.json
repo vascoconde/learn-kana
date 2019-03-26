@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "elm-app build",
-    "build-css": "./node_modules/.bin/tailwind build ./src/main.css -c ./tailwind.js -o ./src/output.css"
+    "build-css": "./node_modules/.bin/tailwind build ./src/main.css -c ./tailwind.config.js -o ./src/output.css"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,6 @@
   "homepage": "https://github.com/vascoconde/learn-kana#readme",
   "devDependencies": {
     "create-elm-app": "^2.2.3",
-    "tailwindcss": "^0.7.2"
+    "tailwindcss": "^1.0.0-beta.3"
   }
 }

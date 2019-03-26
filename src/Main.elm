@@ -125,7 +125,10 @@ update msg model =
             )
 
         SubmitAnswer ->
-            if String.trim (String.toLower model.currentAnswer) == model.currentKana.reading then
+            if model.currentAnswer == "" then
+                ( model, Cmd.none )
+
+            else if String.trim (String.toLower model.currentAnswer) == model.currentKana.reading then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
@@ -134,9 +137,6 @@ update msg model =
                   }
                 , Random.generate GetRandomKana (randomKana model)
                 )
-
-            else if model.currentAnswer == "" then
-                ( model, Cmd.none )
 
             else if model.failedAttempts > 1 then
                 ( { model
@@ -232,20 +232,19 @@ viewResultLabel result =
             text ""
 
 
-checkbox : msg -> Bool -> Html msg
-checkbox msg isChecked =
+checkbox : msg -> Bool -> String -> Html msg
+checkbox msg isChecked labelText =
     label []
-        [ input [ type_ "checkbox", checked isChecked, onClick msg ] []
-        , text " "
+        [ input [ type_ "checkbox", checked isChecked, onClick msg, class "mr-1" ] []
+        , text labelText
         ]
 
 
 viewKanaRow : Model -> String -> Html Msg
 viewKanaRow model consonant =
     p []
-        [ checkbox (SelectKana consonant) <|
-            List.member consonant model.practicingKanaConsonants
-        , text
+        [ checkbox (SelectKana consonant)
+            (List.member consonant model.practicingKanaConsonants)
             (kanaReadings
                 |> List.filter (\a -> a.consonant == consonant)
                 |> List.map .character
@@ -257,15 +256,15 @@ viewKanaRow model consonant =
 viewKanaFilters : Model -> Html Msg
 viewKanaFilters model =
     div []
-        [ h1 [] [ text <| "Which do you want to practice?" ]
+        [ h1 [ class "mt-3" ] [ text <| "Which Katakana do you want to practice?" ]
         , div [] (List.map (\a -> viewKanaRow model a) kanaConsonants)
         ]
 
 
 view : Model -> Html Msg
 view model =
-    div [ class "text-center font-sans " ]
-        [ h1 [ class "mt-3" ] [ text <| "Learn some Kana" ]
+    div [ class "text-center font-sans text-gray-900 " ]
+        [ h1 [ class "mt-3 text-3xl font-bold" ] [ text <| "Learn some Kana" ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , div [ class "text-5xl mt-3" ] [ text <| model.currentKana.character ]
         , div [ class "h-4 mt-2" ] [ viewResultLabel model.result ]
@@ -279,7 +278,7 @@ view model =
                 ]
                 []
             , button
-                [ class "bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 mb-4 rounded"
+                [ class "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-4 rounded"
                 , onClick SubmitAnswer
                 ]
                 [ text "Submit" ]
