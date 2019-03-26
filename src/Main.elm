@@ -75,6 +75,7 @@ type alias Kana =
 type Msg
     = UpdateAnswer String
     | SubmitAnswer
+    | NextKana
     | GenerateRandomKana
     | GetRandomKana (Maybe Kana)
     | SelectKana String
@@ -141,7 +142,7 @@ update msg model =
             else if model.failedAttempts > 1 then
                 ( { model
                     | result = IncorrectShowAnswer model.currentKana.reading
-                    , currentAnswer = ""
+                    , currentAnswer = mainReading model.currentKana.reading
                     , failedAttempts = model.failedAttempts + 1
                     , numberWrongAnswers = model.numberWrongAnswers - 1
                   }
@@ -157,6 +158,15 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        NextKana ->
+            ( { model
+                | currentAnswer = ""
+                , failedAttempts = 0
+                , result = None
+              }
+            , Random.generate GetRandomKana (randomKana model)
+            )
 
         GetRandomKana maybeKana ->
             case maybeKana of
@@ -216,6 +226,16 @@ onEnter msg =
     on "keydown" (Json.andThen isEnter keyCode)
 
 
+mainReading : List String -> String
+mainReading readings =
+    case readings of
+        first :: rest ->
+            first
+
+        [] ->
+            "Nothing selected"
+
+
 viewResultLabel : Result -> Html Msg
 viewResultLabel result =
     case result of
@@ -226,12 +246,7 @@ viewResultLabel result =
             text "👎"
 
         IncorrectShowAnswer readings ->
-            case readings of
-                mainReading :: rest ->
-                    text ("👎 the answer is: " ++ mainReading)
-
-                [] ->
-                    text "Nothing selected"
+            text ("👎 the answer is: " ++ mainReading readings)
 
         None ->
             text ""
@@ -266,14 +281,27 @@ viewKanaFilters model =
         ]
 
 
-view : Model -> Html Msg
-view model =
-    div [ class "text-center font-sans text-gray-900 " ]
-        [ h1 [ class "mt-3 text-3xl font-bold" ] [ text <| "Learn some Kana" ]
-        , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
-        , div [ class "text-5xl mt-3" ] [ text <| model.currentKana.character ]
-        , div [ class "h-4 mt-2" ] [ viewResultLabel model.result ]
-        , div []
+submitButton : Model -> List (Html Msg)
+submitButton model =
+    case model.result of
+        IncorrectShowAnswer stringList ->
+            [ input
+                [ class "shadow appearance-none block m-auto border rounded w-15 mt-2 mb-3 py-2 px-3 text-xl text-center text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                , placeholder "reading"
+                , onInput UpdateAnswer
+                , onEnter NextKana
+                , readonly True
+                , value model.currentAnswer
+                ]
+                []
+            , button
+                [ class "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-4 rounded"
+                , onClick NextKana
+                ]
+                [ text "Next" ]
+            ]
+
+        _ ->
             [ input
                 [ class "shadow appearance-none block m-auto border rounded w-15 mt-2 mb-3 py-2 px-3 text-xl text-center text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
                 , placeholder "reading"
@@ -288,6 +316,16 @@ view model =
                 ]
                 [ text "Submit" ]
             ]
+
+
+view : Model -> Html Msg
+view model =
+    div [ class "text-center font-sans text-gray-900 " ]
+        [ h1 [ class "mt-3 text-3xl font-bold" ] [ text <| "Learn some Kana" ]
+        , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
+        , div [ class "text-5xl mt-3" ] [ text <| model.currentKana.character ]
+        , div [ class "h-4 mt-2" ] [ viewResultLabel model.result ]
+        , div [] (submitButton model)
         , viewKanaFilters model
         ]
 
