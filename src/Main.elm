@@ -11,53 +11,53 @@ import Random.Array exposing (sample)
 
 
 kanaReadings =
-    [ Kana "ア" "a" ""
-    , Kana "イ" "i" ""
-    , Kana "ウ" "u" ""
-    , Kana "エ" "e" ""
-    , Kana "オ" "o" ""
-    , Kana "カ" "ka" "k"
-    , Kana "キ" "ki" "k"
-    , Kana "ク" "ku" "k"
-    , Kana "ケ" "ke" "k"
-    , Kana "コ" "ko" "k"
-    , Kana "サ" "sa" "s"
-    , Kana "シ" "shi" "s"
-    , Kana "ス" "su" "s"
-    , Kana "セ" "se" "s"
-    , Kana "ソ" "so" "s"
-    , Kana "タ" "ta" "t"
-    , Kana "チ" "chi" "t"
-    , Kana "ツ" "tsu" "t"
-    , Kana "テ" "te" "t"
-    , Kana "ト" "to" "t"
-    , Kana "ナ" "na" "n"
-    , Kana "ニ" "ni" "n"
-    , Kana "ヌ" "nu" "n"
-    , Kana "ネ" "ne" "n"
-    , Kana "ノ" "no" "n"
-    , Kana "ハ" "ha" "h"
-    , Kana "ヒ" "hi" "h"
-    , Kana "フ" "hu" "h"
-    , Kana "ヘ" "he" "h"
-    , Kana "ホ" "ho" "h"
-    , Kana "マ" "ma" "m"
-    , Kana "ミ" "mi" "m"
-    , Kana "ム" "mu" "m"
-    , Kana "メ" "me" "m"
-    , Kana "モ" "mo" "m"
-    , Kana "ヤ" "ya" "y"
-    , Kana "ユ" "yu" "y"
-    , Kana "ヨ" "yo" "y"
-    , Kana "ラ" "ra" "r"
-    , Kana "リ" "ri" "r"
-    , Kana "ル" "ru" "r"
-    , Kana "レ" "re" "r"
-    , Kana "ロ" "ro" "r"
-    , Kana "ワ" "wa" "w"
-    , Kana "ヰ" "wi" "w"
-    , Kana "ヱ" "we" "w"
-    , Kana "ヲ" "wo" "w"
+    [ Kana "ア" [ "a" ] ""
+    , Kana "イ" [ "i" ] ""
+    , Kana "ウ" [ "u" ] ""
+    , Kana "エ" [ "e" ] ""
+    , Kana "オ" [ "o" ] ""
+    , Kana "カ" [ "ka" ] "k"
+    , Kana "キ" [ "ki" ] "k"
+    , Kana "ク" [ "ku" ] "k"
+    , Kana "ケ" [ "ke" ] "k"
+    , Kana "コ" [ "ko" ] "k"
+    , Kana "サ" [ "sa" ] "s"
+    , Kana "シ" [ "shi", "si" ] "s"
+    , Kana "ス" [ "su" ] "s"
+    , Kana "セ" [ "se" ] "s"
+    , Kana "ソ" [ "so" ] "s"
+    , Kana "タ" [ "ta" ] "t"
+    , Kana "チ" [ "chi", "ti" ] "t"
+    , Kana "ツ" [ "tsu", "tu" ] "t"
+    , Kana "テ" [ "te" ] "t"
+    , Kana "ト" [ "to" ] "t"
+    , Kana "ナ" [ "na" ] "n"
+    , Kana "ニ" [ "ni" ] "n"
+    , Kana "ヌ" [ "nu" ] "n"
+    , Kana "ネ" [ "ne" ] "n"
+    , Kana "ノ" [ "no" ] "n"
+    , Kana "ハ" [ "ha" ] "h"
+    , Kana "ヒ" [ "hi" ] "h"
+    , Kana "フ" [ "fu", "hu" ] "h"
+    , Kana "ヘ" [ "he" ] "h"
+    , Kana "ホ" [ "ho" ] "h"
+    , Kana "マ" [ "ma" ] "m"
+    , Kana "ミ" [ "mi" ] "m"
+    , Kana "ム" [ "mu" ] "m"
+    , Kana "メ" [ "me" ] "m"
+    , Kana "モ" [ "mo" ] "m"
+    , Kana "ヤ" [ "ya" ] "y"
+    , Kana "ユ" [ "yu" ] "y"
+    , Kana "ヨ" [ "yo" ] "y"
+    , Kana "ラ" [ "ra" ] "r"
+    , Kana "リ" [ "ri" ] "r"
+    , Kana "ル" [ "ru" ] "r"
+    , Kana "レ" [ "re" ] "r"
+    , Kana "ロ" [ "ro" ] "r"
+    , Kana "ワ" [ "wa" ] "w"
+    , Kana "ヰ" [ "wi" ] "w"
+    , Kana "ヱ" [ "we" ] "w"
+    , Kana "ヲ" [ "wo" ] "w"
     ]
 
 
@@ -67,7 +67,7 @@ kanaConsonants =
 
 type alias Kana =
     { character : String
-    , reading : String
+    , reading : List String
     , consonant : String
     }
 
@@ -83,7 +83,7 @@ type Msg
 type Result
     = Correct
     | Incorrect
-    | IncorrectShowAnswer String
+    | IncorrectShowAnswer (List String)
     | None
 
 
@@ -102,7 +102,7 @@ initialModel : () -> ( Model, Cmd Msg )
 initialModel _ =
     let
         model =
-            { currentKana = Kana "" "" ""
+            { currentKana = Kana "" [ "" ] ""
             , currentAnswer = ""
             , result = None
             , numberCorrectAnswers = 0
@@ -128,7 +128,7 @@ update msg model =
             if model.currentAnswer == "" then
                 ( model, Cmd.none )
 
-            else if String.trim (String.toLower model.currentAnswer) == model.currentKana.reading then
+            else if List.member (String.trim (String.toLower model.currentAnswer)) model.currentKana.reading then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
@@ -164,7 +164,7 @@ update msg model =
                     ( { model | currentKana = kana }, Cmd.none )
 
                 Nothing ->
-                    ( { model | currentKana = Kana "" "" "" }, Cmd.none )
+                    ( { model | currentKana = Kana "" [] "" }, Cmd.none )
 
         GenerateRandomKana ->
             ( model, Random.generate GetRandomKana (randomKana model) )
@@ -225,8 +225,13 @@ viewResultLabel result =
         Incorrect ->
             text "👎"
 
-        IncorrectShowAnswer answer ->
-            text ("👎 the answer is: " ++ answer)
+        IncorrectShowAnswer readings ->
+            case readings of
+                mainReading :: rest ->
+                    text ("👎 the answer is: " ++ mainReading)
+
+                [] ->
+                    text "Nothing selected"
 
         None ->
             text ""
