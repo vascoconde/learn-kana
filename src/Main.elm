@@ -58,11 +58,12 @@ kanaReadings =
     , Kana "ヰ" [ "wi" ] "w"
     , Kana "ヱ" [ "we" ] "w"
     , Kana "ヲ" [ "wo" ] "w"
+    , Kana "ン" [ "n" ] "nn"
     ]
 
 
 kanaConsonants =
-    [ "", "k", "s", "t", "n", "h", "m", "y", "r", "w" ]
+    [ "", "k", "s", "t", "n", "h", "m", "y", "r", "w", "nn" ]
 
 
 type alias Kana =
