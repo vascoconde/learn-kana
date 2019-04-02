@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Array exposing (fromList)
 import Browser
-import Html exposing (Attribute, Html, button, div, h1, input, label, p, text)
+import Html exposing (Attribute, Html, br, button, div, h1, input, label, p, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
@@ -324,7 +324,16 @@ view model =
     div [ class "text-center font-sans text-gray-900 " ]
         [ h1 [ class "mt-3 text-3xl font-bold" ] [ text <| "Learn some Kana" ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
-        , div [ class "text-5xl mt-3" ] [ text <| model.currentKana.character ]
+        , if List.length model.practicingKanaConsonants > 0 then
+            div [ class "text-5xl mt-3 h-12" ]
+                [ text <| model.currentKana.character ]
+
+          else
+            div [ class "text-xl mt-3 color-gray-700 h-12" ]
+                [ text <| "Select some Kana"
+                , br [] []
+                , text <| "to get started"
+                ]
         , div [ class "h-4 mt-2" ] [ viewResultLabel model.result ]
         , div [] (submitButton model)
         , viewKanaFilters model
