@@ -308,6 +308,7 @@ submitButton model =
                 , placeholder "reading"
                 , onInput UpdateAnswer
                 , onEnter SubmitAnswer
+                , readonly (List.isEmpty model.practicingKanaConsonants)
                 , value model.currentAnswer
                 ]
                 []
