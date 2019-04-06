@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Array exposing (fromList)
 import Browser
-import Html exposing (Attribute, Html, br, button, div, h1, input, label, p, text)
+import Html exposing (Attribute, Html, a, br, button, div, h1, input, label, p, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
@@ -80,6 +80,8 @@ type Msg
     | GenerateRandomKana
     | GetRandomKana (Maybe Kana)
     | SelectKana String
+    | SelectAllKana
+    | DeselectAllKana
 
 
 type Result
@@ -200,6 +202,28 @@ update msg model =
             , Random.generate GetRandomKana (randomKana newModel)
             )
 
+        SelectAllKana ->
+            let
+                newModel =
+                    { model
+                        | practicingKanaConsonants = kanaConsonants
+                    }
+            in
+            ( newModel
+            , Random.generate GetRandomKana (randomKana newModel)
+            )
+
+        DeselectAllKana ->
+            let
+                newModel =
+                    { model
+                        | practicingKanaConsonants = []
+                    }
+            in
+            ( newModel
+            , Random.generate GetRandomKana (randomKana newModel)
+            )
+
 
 filterKanaList : List String -> List Kana -> List Kana
 filterKanaList practicingKanaConsonants kanaList =
@@ -278,6 +302,11 @@ viewKanaFilters : Model -> Html Msg
 viewKanaFilters model =
     div []
         [ h1 [ class "mt-3" ] [ text <| "Which Katakana do you want to practice?" ]
+        , div []
+            [ a [ onClick DeselectAllKana ] [ text "Deselect All" ]
+            , span [] [ text " | " ]
+            , a [ onClick SelectAllKana ] [ text "Select All" ]
+            ]
         , div [] (List.map (\a -> viewKanaRow model a) kanaConsonants)
         ]
 
