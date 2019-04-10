@@ -6,71 +6,9 @@ import Html exposing (Attribute, Html, a, br, button, div, h1, input, label, p, 
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Kana exposing (..)
 import Random exposing (generate)
 import Random.Array exposing (sample)
-
-
-kanaReadings =
-    [ Kana "ア" [ "a" ] ""
-    , Kana "イ" [ "i" ] ""
-    , Kana "ウ" [ "u" ] ""
-    , Kana "エ" [ "e" ] ""
-    , Kana "オ" [ "o" ] ""
-    , Kana "カ" [ "ka" ] "k"
-    , Kana "キ" [ "ki" ] "k"
-    , Kana "ク" [ "ku" ] "k"
-    , Kana "ケ" [ "ke" ] "k"
-    , Kana "コ" [ "ko" ] "k"
-    , Kana "サ" [ "sa" ] "s"
-    , Kana "シ" [ "shi", "si" ] "s"
-    , Kana "ス" [ "su" ] "s"
-    , Kana "セ" [ "se" ] "s"
-    , Kana "ソ" [ "so" ] "s"
-    , Kana "タ" [ "ta" ] "t"
-    , Kana "チ" [ "chi", "ti" ] "t"
-    , Kana "ツ" [ "tsu", "tu" ] "t"
-    , Kana "テ" [ "te" ] "t"
-    , Kana "ト" [ "to" ] "t"
-    , Kana "ナ" [ "na" ] "n"
-    , Kana "ニ" [ "ni" ] "n"
-    , Kana "ヌ" [ "nu" ] "n"
-    , Kana "ネ" [ "ne" ] "n"
-    , Kana "ノ" [ "no" ] "n"
-    , Kana "ハ" [ "ha" ] "h"
-    , Kana "ヒ" [ "hi" ] "h"
-    , Kana "フ" [ "fu", "hu" ] "h"
-    , Kana "ヘ" [ "he" ] "h"
-    , Kana "ホ" [ "ho" ] "h"
-    , Kana "マ" [ "ma" ] "m"
-    , Kana "ミ" [ "mi" ] "m"
-    , Kana "ム" [ "mu" ] "m"
-    , Kana "メ" [ "me" ] "m"
-    , Kana "モ" [ "mo" ] "m"
-    , Kana "ヤ" [ "ya" ] "y"
-    , Kana "ユ" [ "yu" ] "y"
-    , Kana "ヨ" [ "yo" ] "y"
-    , Kana "ラ" [ "ra" ] "r"
-    , Kana "リ" [ "ri" ] "r"
-    , Kana "ル" [ "ru" ] "r"
-    , Kana "レ" [ "re" ] "r"
-    , Kana "ロ" [ "ro" ] "r"
-    , Kana "ワ" [ "wa" ] "w"
-    , Kana "ヰ" [ "wi" ] "w"
-    , Kana "ヱ" [ "we" ] "w"
-    , Kana "ヲ" [ "wo" ] "w"
-    , Kana "ン" [ "n" ] "nn"
-    ]
-
-
-kanaConsonants =
-    [ "", "k", "s", "t", "n", "h", "m", "y", "r", "w", "nn" ]
-
-
-type alias Kana =
-    { character : String
-    , reading : List String
-    , consonant : String
-    }
 
 
 type Msg
