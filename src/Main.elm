@@ -17,7 +17,7 @@ type Msg
     | NextKana
     | GenerateRandomKana
     | GetRandomKana (Maybe Kana)
-    | SelectKana String
+    | SelectKana LearningKanaSelection
     | SelectAllKana
     | DeselectAllKana
 
@@ -36,7 +36,7 @@ type alias Model =
     , numberCorrectAnswers : Int
     , numberWrongAnswers : Int
     , failedAttempts : Int
-    , practicingKanaConsonants : List String
+    , practicingKanaConsonants : List LearningKanaSelection
     }
 
 
@@ -50,7 +50,7 @@ initialModel _ =
             , numberCorrectAnswers = 0
             , numberWrongAnswers = 0
             , failedAttempts = 0
-            , practicingKanaConsonants = kanaConsonants
+            , practicingKanaConsonants = []
             }
     in
     ( model
@@ -144,7 +144,7 @@ update msg model =
             let
                 newModel =
                     { model
-                        | practicingKanaConsonants = kanaConsonants
+                        | practicingKanaConsonants = kanaSelectionByType Katakana
                     }
             in
             ( newModel
@@ -163,9 +163,9 @@ update msg model =
             )
 
 
-filterKanaList : List String -> List Kana -> List Kana
+filterKanaList : List LearningKanaSelection -> List Kana -> List Kana
 filterKanaList practicingKanaConsonants kanaList =
-    List.filter (\kana -> List.member kana.consonant practicingKanaConsonants) kanaList
+    List.filter (\kana -> List.member (LearningKanaSelection Katakana kana.consonant) practicingKanaConsonants) kanaList
 
 
 randomKana : Model -> Random.Generator (Maybe Kana)
@@ -223,14 +223,14 @@ checkbox msg isChecked labelText =
         ]
 
 
-viewKanaRow : Model -> String -> Html Msg
-viewKanaRow model consonant =
+viewKanaRow : Model -> LearningKanaSelection -> Html Msg
+viewKanaRow model kanaSelection =
     p []
-        [ checkbox (SelectKana consonant)
-            (List.member consonant model.practicingKanaConsonants)
+        [ checkbox (SelectKana kanaSelection)
+            (List.member kanaSelection model.practicingKanaConsonants)
             (kanaReadings
-                |> List.filter (\a -> a.consonant == consonant)
-                |> List.map .katakana
+                |> List.filter (\a -> a.consonant == kanaSelection.consonant)
+                |> List.map (reading kanaSelection.kanaType)
                 |> String.join ""
             )
         ]
@@ -245,7 +245,8 @@ viewKanaFilters model =
             , span [] [ text " | " ]
             , a [ onClick SelectAllKana ] [ text "Select All" ]
             ]
-        , div [] (List.map (\a -> viewKanaRow model a) kanaConsonants)
+        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
+        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
         ]
 
 
