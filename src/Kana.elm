@@ -1,12 +1,23 @@
-module Kana exposing (Kana, kanaConsonants, kanaReadings)
+module Kana exposing (Kana, KanaType(..), LearningKanaSelection, kanaConsonants, kanaReadings, kanaSelectionByType, reading)
 
 import List.Extra exposing (unique)
+
+
+type KanaType
+    = Hiragana
+    | Katakana
+
+
+type alias LearningKanaSelection =
+    { kanaType : KanaType
+    , consonant : String
+    }
 
 
 type alias Kana =
     { hiragana : String
     , katakana : String
-    , reading : List String
+    , reading : List String -- first element in the list is the main reading
     , consonant : String
     }
 
@@ -15,6 +26,22 @@ kanaConsonants =
     kanaReadings
         |> List.map (\a -> a.consonant)
         |> unique
+
+
+kanaSelectionByType : KanaType -> List LearningKanaSelection
+kanaSelectionByType kanaType =
+    kanaConsonants
+        |> List.map (\consonant -> LearningKanaSelection kanaType consonant)
+
+
+reading : KanaType -> Kana -> String
+reading kanaType kana =
+    case kanaType of
+        Hiragana ->
+            kana.hiragana
+
+        Katakana ->
+            kana.katakana
 
 
 kanaReadings =
@@ -64,29 +91,33 @@ kanaReadings =
     , Kana "わ" "ワ" [ "wa" ] "w"
     , Kana "を" "ヲ" [ "wo" ] "w"
     , Kana "ん" "ン" [ "n" ] "nn"
-    , Kana "が" "ガ" [ "ga" ] "g2"
-    , Kana "ぎ" "ギ" [ "gi" ] "g2"
-    , Kana "ぐ" "グ" [ "gu" ] "g2"
-    , Kana "げ" "ゲ" [ "ge" ] "g2"
-    , Kana "ご" "ゴ" [ "go" ] "g2"
-    , Kana "ざ" "ザ" [ "za" ] "z2"
-    , Kana "じ" "ジ" [ "ji", "zi" ] "z2"
-    , Kana "ず" "ズ" [ "zu" ] "z2"
-    , Kana "ぜ" "ゼ" [ "ze" ] "z2"
-    , Kana "ぞ" "ゾ" [ "zo" ] "z2"
-    , Kana "だ" "ダ" [ "da" ] "d2"
-    , Kana "ぢ" "ヂ" [ "ji", "di" ] "d2"
-    , Kana "づ" "ヅ" [ "zu", "du" ] "d2"
-    , Kana "で" "デ" [ "de" ] "d2"
-    , Kana "ど" "ド" [ "do" ] "d2"
-    , Kana "ば" "バ" [ "ba" ] "b2"
-    , Kana "び" "ビ" [ "bi" ] "b2"
-    , Kana "ぶ" "ブ" [ "bu" ] "b2"
-    , Kana "べ" "ベ" [ "be" ] "b2"
-    , Kana "ぼ" "ボ" [ "bo" ] "b2"
-    , Kana "ぱ" "パ" [ "pa" ] "p2"
-    , Kana "ぴ" "ピ" [ "pi" ] "p2"
-    , Kana "ぷ" "プ" [ "pu" ] "p2"
-    , Kana "ぺ" "ペ" [ "pe" ] "p2"
-    , Kana "ぽ" "ポ" [ "po" ] "p2"
+    , Kana "が" "ガ" [ "ga" ] "g"
+    , Kana "ぎ" "ギ" [ "gi" ] "g"
+    , Kana "ぐ" "グ" [ "gu" ] "g"
+    , Kana "げ" "ゲ" [ "ge" ] "g"
+    , Kana "ご" "ゴ" [ "go" ] "g"
+    , Kana "ざ" "ザ" [ "za" ] "z"
+    , Kana "じ" "ジ" [ "ji", "zi" ] "z"
+    , Kana "ず" "ズ" [ "zu" ] "z"
+    , Kana "ぜ" "ゼ" [ "ze" ] "z"
+    , Kana "ぞ" "ゾ" [ "zo" ] "z"
+    , Kana "だ" "ダ" [ "da" ] "d"
+    , Kana "ぢ" "ヂ" [ "ji", "di" ] "d"
+    , Kana "づ" "ヅ" [ "zu", "du" ] "d"
+    , Kana "で" "デ" [ "de" ] "d"
+    , Kana "ど" "ド" [ "do" ] "d"
+    , Kana "ば" "バ" [ "ba" ] "b"
+    , Kana "び" "ビ" [ "bi" ] "b"
+    , Kana "ぶ" "ブ" [ "bu" ] "b"
+    , Kana "べ" "ベ" [ "be" ] "b"
+    , Kana "ぼ" "ボ" [ "bo" ] "b"
+    , Kana "ぱ" "パ" [ "pa" ] "p"
+    , Kana "ぴ" "ピ" [ "pi" ] "p"
+    , Kana "ぷ" "プ" [ "pu" ] "p"
+    , Kana "ぺ" "ペ" [ "pe" ] "p"
+    , Kana "ぽ" "ポ" [ "po" ] "p"
+
+    --  , Kana "ぽ" "キャ" [ "kya" ] "ky"
+    --  , Kana "ぽ" "キュ" [ "kyu" ] "ky"
+    --  , Kana "ぽ" "キョ" [ "kyo" ] "ky"
     ]
