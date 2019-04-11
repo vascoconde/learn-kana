@@ -44,7 +44,7 @@ initialModel : () -> ( Model, Cmd Msg )
 initialModel _ =
     let
         model =
-            { currentKana = Kana "" [ "" ] ""
+            { currentKana = Kana "" "" [ "" ] ""
             , currentAnswer = ""
             , result = None
             , numberCorrectAnswers = 0
@@ -115,7 +115,7 @@ update msg model =
                     ( { model | currentKana = kana }, Cmd.none )
 
                 Nothing ->
-                    ( { model | currentKana = Kana "" [] "" }, Cmd.none )
+                    ( { model | currentKana = Kana "" "" [] "" }, Cmd.none )
 
         GenerateRandomKana ->
             ( model, Random.generate GetRandomKana (randomKana model) )
@@ -230,7 +230,7 @@ viewKanaRow model consonant =
             (List.member consonant model.practicingKanaConsonants)
             (kanaReadings
                 |> List.filter (\a -> a.consonant == consonant)
-                |> List.map .character
+                |> List.map .katakana
                 |> String.join ""
             )
         ]
@@ -294,7 +294,7 @@ view model =
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , if List.length model.practicingKanaConsonants > 0 then
             div [ class "text-5xl mt-3 h-12" ]
-                [ text <| model.currentKana.character ]
+                [ text <| model.currentKana.katakana ]
 
           else
             div [ class "text-xl mt-3 color-gray-700 h-12" ]
