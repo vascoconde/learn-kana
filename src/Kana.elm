@@ -66,28 +66,11 @@ kanaReadingsBeingPracticed kana learningKanaSelection =
         |> addKanaForType kana Katakana learningKanaSelection
 
 
-
---[ if (List.member (LearningKanaSelection Hiragana kana.reading) kana) then KanaReading a.hiragana a.reading else Null,
---KanaReading a.katakana a.reading ]
-
-
 filterKanaList : List LearningKanaSelection -> List KanaReading
 filterKanaList practicingKana =
     kanaReadings
         |> List.map (\a -> kanaReadingsBeingPracticed a practicingKana)
         |> List.concat
-
-
-getKanaReadings : List LearningKanaSelection -> List KanaReading
-getKanaReadings practicingKana =
-    []
-
-
-
---List.concat (List.map (\a -> KanaReading a.hiragana) practicingKana)
--- List.concatMap (\a -> [ a, a ]) kanaReadings
--- |>
---   List.map(\a -> KanaReading a.)
 
 
 kanaReadings =
