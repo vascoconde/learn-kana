@@ -1,4 +1,4 @@
-module Kana exposing (Kana, KanaType(..), LearningKanaSelection, kanaConsonants, kanaReadings, kanaSelectionByType, reading)
+module Kana exposing (Kana, KanaReading, KanaType(..), LearningKanaSelection, filterKanaList, kanaConsonants, kanaReadings, kanaSelectionByType, reading)
 
 import List.Extra exposing (unique)
 
@@ -11,6 +11,12 @@ type KanaType
 type alias LearningKanaSelection =
     { kanaType : KanaType
     , consonant : String
+    }
+
+
+type alias KanaReading =
+    { symbol : String
+    , readings : List String
     }
 
 
@@ -42,6 +48,46 @@ reading kanaType kana =
 
         Katakana ->
             kana.katakana
+
+
+addKanaForType : Kana -> KanaType -> List LearningKanaSelection -> List KanaReading -> List KanaReading
+addKanaForType kana kanaType learningKanaSelection list =
+    if List.member (LearningKanaSelection kanaType kana.consonant) learningKanaSelection then
+        KanaReading (reading kanaType kana) kana.reading :: list
+
+    else
+        list
+
+
+kanaReadingsBeingPracticed : Kana -> List LearningKanaSelection -> List KanaReading
+kanaReadingsBeingPracticed kana learningKanaSelection =
+    []
+        |> addKanaForType kana Hiragana learningKanaSelection
+        |> addKanaForType kana Katakana learningKanaSelection
+
+
+
+--[ if (List.member (LearningKanaSelection Hiragana kana.reading) kana) then KanaReading a.hiragana a.reading else Null,
+--KanaReading a.katakana a.reading ]
+
+
+filterKanaList : List LearningKanaSelection -> List KanaReading
+filterKanaList practicingKana =
+    kanaReadings
+        |> List.map (\a -> kanaReadingsBeingPracticed a practicingKana)
+        |> List.concat
+
+
+getKanaReadings : List LearningKanaSelection -> List KanaReading
+getKanaReadings practicingKana =
+    []
+
+
+
+--List.concat (List.map (\a -> KanaReading a.hiragana) practicingKana)
+-- List.concatMap (\a -> [ a, a ]) kanaReadings
+-- |>
+--   List.map(\a -> KanaReading a.)
 
 
 kanaReadings =

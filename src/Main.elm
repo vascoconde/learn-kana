@@ -16,7 +16,7 @@ type Msg
     | SubmitAnswer
     | NextKana
     | GenerateRandomKana
-    | GetRandomKana (Maybe Kana)
+    | GetRandomKana (Maybe KanaReading)
     | SelectKana LearningKanaSelection
     | SelectAllKana
     | DeselectAllKana
@@ -30,7 +30,7 @@ type Result
 
 
 type alias Model =
-    { currentKana : Kana
+    { currentKana : KanaReading
     , currentAnswer : String
     , result : Result
     , numberCorrectAnswers : Int
@@ -44,7 +44,7 @@ initialModel : () -> ( Model, Cmd Msg )
 initialModel _ =
     let
         model =
-            { currentKana = Kana "" "" [ "" ] ""
+            { currentKana = KanaReading "" [ "" ]
             , currentAnswer = ""
             , result = None
             , numberCorrectAnswers = 0
@@ -70,7 +70,7 @@ update msg model =
             if model.currentAnswer == "" then
                 ( model, Cmd.none )
 
-            else if List.member (String.trim (String.toLower model.currentAnswer)) model.currentKana.reading then
+            else if List.member (String.trim (String.toLower model.currentAnswer)) model.currentKana.readings then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
@@ -82,8 +82,8 @@ update msg model =
 
             else if model.failedAttempts > 1 then
                 ( { model
-                    | result = IncorrectShowAnswer model.currentKana.reading
-                    , currentAnswer = mainReading model.currentKana.reading
+                    | result = IncorrectShowAnswer model.currentKana.readings
+                    , currentAnswer = mainReading model.currentKana.readings
                     , failedAttempts = model.failedAttempts + 1
                     , numberWrongAnswers = model.numberWrongAnswers - 1
                   }
@@ -115,25 +115,25 @@ update msg model =
                     ( { model | currentKana = kana }, Cmd.none )
 
                 Nothing ->
-                    ( { model | currentKana = Kana "" "" [] "" }, Cmd.none )
+                    ( { model | currentKana = KanaReading "" [] }, Cmd.none )
 
         GenerateRandomKana ->
             ( model, Random.generate GetRandomKana (randomKana model) )
 
-        SelectKana consonant ->
+        SelectKana kanaSelection ->
             let
                 newModel =
-                    if List.member consonant model.practicingKanaConsonants then
+                    if List.member kanaSelection model.practicingKanaConsonants then
                         { model
                             | practicingKanaConsonants =
                                 model.practicingKanaConsonants
-                                    |> List.filter (\c -> c /= consonant)
+                                    |> List.filter (\sel -> sel /= kanaSelection)
                         }
 
                     else
                         { model
                             | practicingKanaConsonants =
-                                consonant :: model.practicingKanaConsonants
+                                kanaSelection :: model.practicingKanaConsonants
                         }
             in
             ( newModel
@@ -144,7 +144,7 @@ update msg model =
             let
                 newModel =
                     { model
-                        | practicingKanaConsonants = kanaSelectionByType Katakana
+                        | practicingKanaConsonants = List.concat [ kanaSelectionByType Hiragana, kanaSelectionByType Katakana ]
                     }
             in
             ( newModel
@@ -163,15 +163,9 @@ update msg model =
             )
 
 
-filterKanaList : List LearningKanaSelection -> List Kana -> List Kana
-filterKanaList practicingKanaConsonants kanaList =
-    List.filter (\kana -> List.member (LearningKanaSelection Katakana kana.consonant) practicingKanaConsonants) kanaList
-
-
-randomKana : Model -> Random.Generator (Maybe Kana)
+randomKana : Model -> Random.Generator (Maybe KanaReading)
 randomKana model =
-    kanaReadings
-        |> filterKanaList model.practicingKanaConsonants
+    filterKanaList model.practicingKanaConsonants
         |> Array.fromList
         |> Random.Array.sample
 
@@ -245,7 +239,9 @@ viewKanaFilters model =
             , span [] [ text " | " ]
             , a [ onClick SelectAllKana ] [ text "Select All" ]
             ]
+        , p [] [ text "Hiragana" ]
         , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
+        , p [] [ text "Katakana" ]
         , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
         ]
 
@@ -295,7 +291,7 @@ view model =
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , if List.length model.practicingKanaConsonants > 0 then
             div [ class "text-5xl mt-3 h-12" ]
-                [ text <| model.currentKana.katakana ]
+                [ text <| model.currentKana.symbol ]
 
           else
             div [ class "text-xl mt-3 color-gray-700 h-12" ]
