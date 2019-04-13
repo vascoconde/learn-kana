@@ -70,7 +70,7 @@ update msg model =
             if model.currentAnswer == "" then
                 ( model, Cmd.none )
 
-            else if List.member (String.trim (String.toLower model.currentAnswer)) model.currentKana.readings then
+            else if checkKanaReading model.currentAnswer model.currentKana then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
@@ -222,9 +222,7 @@ viewKanaRow model kanaSelection =
     p []
         [ checkbox (SelectKana kanaSelection)
             (List.member kanaSelection model.practicingKanaConsonants)
-            (kanaReadings
-                |> List.filter (\a -> a.consonant == kanaSelection.consonant)
-                |> List.map (reading kanaSelection.kanaType)
+            (kanaByConsonantGroup kanaSelection
                 |> String.join ""
             )
         ]
