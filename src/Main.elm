@@ -219,7 +219,7 @@ checkbox msg isChecked labelText =
 
 viewKanaRow : Model -> LearningKanaSelection -> Html Msg
 viewKanaRow model kanaSelection =
-    p []
+    div []
         [ checkbox (SelectKana kanaSelection)
             (List.member kanaSelection model.practicingKanaConsonants)
             (kanaByConsonantGroup kanaSelection
@@ -237,10 +237,16 @@ viewKanaFilters model =
             , span [] [ text " | " ]
             , a [ onClick SelectAllKana ] [ text "Select All" ]
             ]
-        , p [] [ text "Hiragana" ]
-        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
-        , p [] [ text "Katakana" ]
-        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
+        , div [ class "flex flex-initial justify-center" ]
+            [ div [ class "p-3" ]
+                [ p [] [ text "Hiragana" ]
+                , div [ class "" ] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
+                ]
+            , div [ class "p-3" ]
+                [ p [] [ text "Katakana" ]
+                , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
+                ]
+            ]
         ]
 
 
