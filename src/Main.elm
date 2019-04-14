@@ -70,7 +70,7 @@ update msg model =
             if model.currentAnswer == "" then
                 ( model, Cmd.none )
 
-            else if List.member (String.trim (String.toLower model.currentAnswer)) model.currentKana.readings then
+            else if checkKanaReading model.currentAnswer model.currentKana then
                 ( { model
                     | result = Correct
                     , currentAnswer = ""
@@ -219,12 +219,10 @@ checkbox msg isChecked labelText =
 
 viewKanaRow : Model -> LearningKanaSelection -> Html Msg
 viewKanaRow model kanaSelection =
-    p []
+    div []
         [ checkbox (SelectKana kanaSelection)
             (List.member kanaSelection model.practicingKanaConsonants)
-            (kanaReadings
-                |> List.filter (\a -> a.consonant == kanaSelection.consonant)
-                |> List.map (reading kanaSelection.kanaType)
+            (kanaByConsonantGroup kanaSelection
                 |> String.join ""
             )
         ]
@@ -239,10 +237,16 @@ viewKanaFilters model =
             , span [] [ text " | " ]
             , a [ onClick SelectAllKana ] [ text "Select All" ]
             ]
-        , p [] [ text "Hiragana" ]
-        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
-        , p [] [ text "Katakana" ]
-        , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
+        , div [ class "flex flex-initial justify-center" ]
+            [ div [ class "p-3" ]
+                [ p [] [ text "Hiragana" ]
+                , div [ class "" ] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Hiragana))
+                ]
+            , div [ class "p-3" ]
+                [ p [] [ text "Katakana" ]
+                , div [] (List.map (\kana -> viewKanaRow model kana) (kanaSelectionByType Katakana))
+                ]
+            ]
         ]
 
 

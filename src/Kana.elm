@@ -1,4 +1,4 @@
-module Kana exposing (Kana, KanaReading, KanaType(..), LearningKanaSelection, filterKanaList, kanaConsonants, kanaReadings, kanaSelectionByType, reading)
+module Kana exposing (Kana, KanaReading, KanaType(..), LearningKanaSelection, checkKanaReading, filterKanaList, kanaByConsonantGroup, kanaConsonants, kanaReadings, kanaSelectionByType, reading)
 
 import List.Extra exposing (unique)
 
@@ -38,6 +38,18 @@ kanaSelectionByType : KanaType -> List LearningKanaSelection
 kanaSelectionByType kanaType =
     kanaConsonants
         |> List.map (\consonant -> LearningKanaSelection kanaType consonant)
+
+
+checkKanaReading : String -> KanaReading -> Bool
+checkKanaReading userGuess currentKana =
+    List.member (String.trim (String.toLower userGuess)) currentKana.readings
+
+
+kanaByConsonantGroup : LearningKanaSelection -> List String
+kanaByConsonantGroup kanaSelection =
+    kanaReadings
+        |> List.filter (\a -> a.consonant == kanaSelection.consonant)
+        |> List.map (reading kanaSelection.kanaType)
 
 
 reading : KanaType -> Kana -> String
