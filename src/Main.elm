@@ -32,6 +32,8 @@ type Result
 type alias Model =
     { currentKana : KanaReading
     , currentAnswer : String
+    , currentStreak : Int
+    , maxStreak : Int
     , result : Result
     , numberCorrectAnswers : Int
     , numberWrongAnswers : Int
@@ -46,6 +48,8 @@ initialModel _ =
         model =
             { currentKana = KanaReading "" [ "" ]
             , currentAnswer = ""
+            , currentStreak = 0
+            , maxStreak = 0
             , result = None
             , numberCorrectAnswers = 0
             , numberWrongAnswers = 0
@@ -76,6 +80,13 @@ update msg model =
                     , currentAnswer = ""
                     , failedAttempts = 0
                     , numberCorrectAnswers = model.numberCorrectAnswers + 1
+                    , currentStreak = model.currentStreak + 1
+                    , maxStreak =
+                        if model.currentStreak > model.maxStreak then
+                            model.currentStreak + 1
+
+                        else
+                            model.maxStreak
                   }
                 , Random.generate GetRandomKana (randomKana model)
                 )
@@ -86,6 +97,7 @@ update msg model =
                     , currentAnswer = mainReading model.currentKana.readings
                     , failedAttempts = model.failedAttempts + 1
                     , numberWrongAnswers = model.numberWrongAnswers - 1
+                    , currentStreak = 0
                   }
                 , Cmd.none
                 )
@@ -96,6 +108,7 @@ update msg model =
                     , currentAnswer = ""
                     , numberWrongAnswers = model.numberWrongAnswers - 1
                     , failedAttempts = model.failedAttempts + 1
+                    , currentStreak = 0
                   }
                 , Cmd.none
                 )
@@ -292,6 +305,7 @@ view : Model -> Html Msg
 view model =
     div [ class "text-center font-sans text-gray-900 " ]
         [ h1 [ class "mt-3 text-3xl font-bold" ] [ text <| "Learn some Kana" ]
+        , div [] [ text <| "Streak: " ++ String.fromInt model.currentStreak, text <| " / Max Streak: " ++ String.fromInt model.maxStreak ]
         , div [] [ text <| "Correct: " ++ String.fromInt model.numberCorrectAnswers ++ "/" ++ String.fromInt (model.numberCorrectAnswers - model.numberWrongAnswers) ]
         , if List.length model.practicingKanaConsonants > 0 then
             div [ class "text-5xl mt-3 h-12" ]
